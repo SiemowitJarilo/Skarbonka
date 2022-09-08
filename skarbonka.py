@@ -1,5 +1,10 @@
 import sqlite3
 
+
+# 1. Dodać opcję usuwania skarbonek
+# 2. 
+# 3. 
+
 db = sqlite3.connect("simple.db")
 cursor = db.cursor()
 
@@ -105,25 +110,23 @@ while True:
                                 SUM(KWOTA) 
                             FROM 
                                 fundusze
-                            GROUP BY NAZWA
+                            GROUP BY invest_ID
         ''')
 
         rows = cursor.fetchall()
 
-        for x in rows:
-            print(x)
+        
 
-        '''for x in rows:
+        for x in rows:
             print("-" * 79)
             print( "ID: ", x[0])
-            print( "KWOTA: ", x[1])
-            print( "invest_ID: ", x[2])
-            print('-' * 79)'''
+            print( "Nazwa: ", x[1])
+            print( "Kwota: ", x[2])
+            print('-' * 79)
 
         cursor.close()
 
-        break
-
+    
     if choice == 4: # Dodaj kwote do skarbonki
         
         db = sqlite3.connect("simple.db")
