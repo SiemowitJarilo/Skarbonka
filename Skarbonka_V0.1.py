@@ -1,4 +1,5 @@
-import sqlite3
+import sqlite3 
+from zondaRequest import zonda
 
 
 # 1. 
@@ -55,7 +56,8 @@ while True:
     print("3. Pokaż kwoty Skarbonek ")
     print("4. Dodaj kwote do skarbonki ")
     print("5. Usuń Skarbonkę ")
-    print("6. Zamknij program ")
+    print("6. Kryptowaluty")
+    print("0. Zamknij program ")
     print("*" * 79)
     print("*" * 79)
     print()
@@ -91,7 +93,7 @@ while True:
             print('-' * 79)
 
         cursor.close()
-
+#
     if choice == 2: # Dodaj skarbonkę
             try:
         
@@ -186,8 +188,11 @@ while True:
         db.commit()
         print("Dane dodano poprwanie")
         db.close()
-        
-    if choice == 6: # Zamknij program 
+
+    if choice == 6:
+        zonda()
+
+    if choice == 0: # Zamknij program 
            break
 
 '''
