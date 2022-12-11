@@ -1,9 +1,14 @@
 import sqlite3
 
 
-# 1. Dodać opcję usuwania skarbonek
+# 1. 
 # 2. 
 # 3. 
+
+def commitMe():
+    db.commit()
+    print("Dane dodano poprwanie")
+    db.close()
 
 db = sqlite3.connect("simple.db")
 cursor = db.cursor()
@@ -38,13 +43,19 @@ print()
 print()
 
 while True:
-    #db.commit()
+    
+    db = sqlite3.connect("simple.db")
+    cursor = db.cursor()
+    db.commit()
+
+
     print("Menu: ")
     print("1. Pokaż skarbonki ")
     print("2. Dodaj skarbonkę ")
     print("3. Pokaż kwoty Skarbonek ")
     print("4. Dodaj kwote do skarbonki ")
-    print("5. Zamknij program ")
+    print("5. Usuń Skarbonkę ")
+    print("6. Zamknij program ")
     print("*" * 79)
     print("*" * 79)
     print()
@@ -53,19 +64,18 @@ while True:
     choice = int(input("Wybierz opcje: "))
     
     if choice == 1: # Pokaz skarbonkę
-        db = sqlite3.connect("simple.db")
-        cursor = db.cursor()
-      
+
+### Problem: Brak sumowania "Kwota" z tabeli "fundusze"
+
         cursor.execute(''' SELECT 
                                 inwestycje.ID,
                                 inwestycje.NAZWA,
                                 inwestycje.WARTOŚĆ,
-                                SUM(fundusze.KWOTA)
+                                fundusze.KWOTA
                             FROM 
                                 inwestycje, 
                                 fundusze
-                            WHERE
-                                inwestycje.ID=fundusze.invest_ID
+                                                     
                             GROUP BY
                                 inwestycje.ID
     ''')
@@ -88,20 +98,17 @@ while True:
             
                 nazwa = input("Podaj nazwę skarbonki: ")
                 wartość = int(input("Podaj kwotę skarbonki: "))
-                kwota = int(input("Podaj kwotę pierwszej wpłaty: "))
-
-
-                db = sqlite3.connect("simple.db")
+                kwota = int(input("Podaj kwotę pierwszej wpłaty: "))                
                 
-                cursor = db.cursor()
-                cursor.execute(''' INSERT INTO inwestycje 
-                            (NAZWA,
-                            WARTOŚĆ,
-                            KWOTA) 
-                            Values (?, ?, ?);''', (nazwa, wartość, kwota))
-                db.commit()
-                print("Dane dodano poprwanie")
-                db.close()
+                cursor.execute(''' INSERT INTO 
+                                        inwestycje
+                                            (NAZWA,
+                                            WARTOŚĆ,
+                                            KWOTA) 
+                                        VALUES (?, ?, ?);''', 
+                                            (nazwa, wartość, kwota))
+                                                                                
+                commitMe()
 
             except sqlite3.Error as e:
                 print("Error -> Coś poszło nie tak", e)
@@ -113,16 +120,19 @@ while True:
                     print("-" * 79)
     
     if choice == 3: # Pokaż kwoty Skarbonek
-        db = sqlite3.connect("simple.db")
-        cursor = db.cursor()
+        #db = sqlite3.connect("simple.db")
+        #cursor = db.cursor()
       
+### Problem: Sumuje wszystkie "Kwoty" dla każdej "Nazwy/ID"
+
+
         cursor.execute(''' SELECT 
                                 invest_ID,
                                 NAZWA, 
                                 SUM(KWOTA) 
                             FROM 
                                 fundusze
-                            GROUP BY invest_ID
+                            GROUP BY Nazwa
         ''')
 
         rows = cursor.fetchall()
@@ -141,8 +151,8 @@ while True:
     
     if choice == 4: # Dodaj kwote do skarbonki
         
-        db = sqlite3.connect("simple.db")
-        cursor = db.cursor()
+        #db = sqlite3.connect("simple.db")
+        #cursor = db.cursor()
         nazwa = input("Wpisz nazwę: ")
         ilość = int(input("Podaj kwote: "))
         id_invest = int(input("Podaj numer ID Skarbonki: "))
@@ -152,13 +162,32 @@ while True:
         cursor.execute(''' INSERT INTO fundusze
                             (NAZWA, KWOTA, invest_ID) 
                             VALUES (?, ?, ?);''', (nazwa, ilość, id_invest))
-        
+        #commitMe()
         db.commit()
         print("Dane dodano poprwanie")
         db.close()
         
 
-    if choice == 5: # Zamknij program 
+    if choice == 5: # Usuń Skarbonkę
+
+         
+        #db = sqlite3.connect("simple.db")
+        #cursor = db.cursor()
+        id = input("Wpisz ID Skarbonki: ")
+        
+
+        
+        #cursor = db.cursor()
+        cursor.execute(''' DELETE FROM
+                                inwestycje 
+                            WHERE
+                                ID=(?);''',(id))
+        
+        db.commit()
+        print("Dane dodano poprwanie")
+        db.close()
+        
+    if choice == 6: # Zamknij program 
            break
 
 '''
